@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 import { Movie, User } from '@shared/schema';
 
 // Set up MongoDB connection
-const MONGODB_URI = 'mongodb://localhost:27017/movies-app';
+// This will connect to your local MongoDB when running on your PC
+const MONGODB_URI = 'mongodb://localhost:27017/favorite-movies';
 
 console.log('Attempting to connect to MongoDB at:', MONGODB_URI);
 
-mongoose.connect(MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000 // 5 seconds timeout
-})
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('Successfully connected to MongoDB at:', MONGODB_URI);
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
+    console.log('Make sure MongoDB is running on your local machine');
   });
 
 // Define Mongoose Schemas
