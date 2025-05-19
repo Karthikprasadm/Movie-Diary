@@ -52,16 +52,16 @@ export default function FilterControls({
       </Select>
 
       <Select
-        value={filter.genre || ""}
+        value={filter.genre || "all-genres"}
         onValueChange={(value) =>
-          onFilterChange({ ...filter, genre: value === "" ? undefined : value })
+          onFilterChange({ ...filter, genre: value === "all-genres" ? undefined : value })
         }
       >
         <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="All Genres" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Genres</SelectItem>
+          <SelectItem value="all-genres">All Genres</SelectItem>
           {genres.map((genre) => (
             <SelectItem key={genre.toLowerCase()} value={genre.toLowerCase()}>
               {genre}
