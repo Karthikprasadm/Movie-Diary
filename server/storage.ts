@@ -1,4 +1,4 @@
-import { movies, type Movie, type InsertMovie, users, type User, type InsertUser } from "@shared/schema";
+import { type Movie, type InsertMovie, type User, type InsertUser } from "@shared/schema";
 
 // modify the interface with any CRUD methods
 // you might need
