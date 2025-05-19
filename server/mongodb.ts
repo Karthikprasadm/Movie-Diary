@@ -2,11 +2,15 @@ import mongoose from 'mongoose';
 import { Movie, User } from '@shared/schema';
 
 // Set up MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/movies-app';
+const MONGODB_URI = 'mongodb://localhost:27017/movies-app';
 
-mongoose.connect(MONGODB_URI)
+console.log('Attempting to connect to MongoDB at:', MONGODB_URI);
+
+mongoose.connect(MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000 // 5 seconds timeout
+})
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Successfully connected to MongoDB at:', MONGODB_URI);
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
@@ -28,7 +32,7 @@ const movieSchema = new mongoose.Schema({
 });
 
 // Create and export models
-export const UserModel = mongoose.model<User>('User', userSchema);
-export const MovieModel = mongoose.model<Movie>('Movie', movieSchema);
+export const UserModel = mongoose.model<User & mongoose.Document>('User', userSchema);
+export const MovieModel = mongoose.model<Movie & mongoose.Document>('Movie', movieSchema);
 
 export default mongoose;
