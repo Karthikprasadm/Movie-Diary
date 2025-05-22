@@ -2,8 +2,6 @@
 
 A modern, full-stack web application to manage your favorite movies. Add, view, edit, and delete movies with ratings, genres, reviews, and posters. Built with React, Express, and MongoDB.
 
-![App Screenshot](/screenshots/app-screenshot.png)
-
 ---
 
 ## 📑 Table of Contents
@@ -192,7 +190,7 @@ For real-time updates (change streams), MongoDB must run as a replica set.
 ### Movie
 | Field     | Type    | Description                           | Required |
 |-----------|---------|---------------------------------------|----------|
-| id        | String  | Unique identifier (MongoDB ObjectId)   | Yes      |
+| id        | String  | Unique identifier (MongoDB ObjectId)  | Yes      |
 | title     | String  | Movie title                           | Yes      |
 | genre     | String  | Movie genre                           | Yes      |
 | rating    | Number  | Rating (1-10)                         | Yes      |
