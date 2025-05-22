@@ -1,6 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { WebSocketServer } from "ws";
+import { MovieModel } from "./mongodb";
+import mongoose from "mongoose";
 
 const app = express();
 app.use(express.json());
@@ -39,6 +42,40 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // WebSocket server setup
+  const wss = new WebSocketServer({ server });
+  wss.on("connection", (ws) => {
+    console.log("WebSocket client connected");
+  });
+
+  // MongoDB change stream for movies collection
+  try {
+    if (mongoose.connection && mongoose.connection.db) {
+      const admin = mongoose.connection.db.admin();
+      admin.replSetGetStatus().then((status: any) => {
+        if (status && status.setName) {
+          const movieStream = MovieModel.watch([], { fullDocument: "updateLookup" });
+          movieStream.on("change", async (change) => {
+            wss.clients.forEach((client) => {
+              if (client.readyState === 1) {
+                client.send(JSON.stringify({ type: "movie-change", data: change }));
+              }
+            });
+          });
+          console.log("WebSocket: MongoDB change stream set up for movies collection");
+        } else {
+          console.warn("MongoDB is not running as a replica set. Change streams are disabled.");
+        }
+      }).catch(() => {
+        console.warn("MongoDB is not running as a replica set. Change streams are disabled.");
+      });
+    } else {
+      console.warn("MongoDB connection.db is undefined. Skipping change streams.");
+    }
+  } catch (err) {
+    console.error("WebSocket: Error setting up MongoDB change stream", err);
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -62,8 +99,7 @@ app.use((req, res, next) => {
   const port = 5000;
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true,
+    host: "127.0.0.1"
   }, () => {
     log(`serving on port ${port}`);
   });

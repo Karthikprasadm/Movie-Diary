@@ -20,17 +20,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a specific movie
   app.get("/api/movies/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ message: "Invalid movie ID" });
       }
-      
       const movie = await storage.getMovie(id);
-      
       if (!movie) {
         return res.status(404).json({ message: "Movie not found" });
       }
-      
       res.json(movie);
     } catch (error) {
       res.status(500).json({ message: "Error fetching movie" });
@@ -54,18 +51,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a movie
   app.put("/api/movies/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ message: "Invalid movie ID" });
       }
-      
       const movieData = insertMovieSchema.partial().parse(req.body);
       const updatedMovie = await storage.updateMovie(id, movieData);
-      
       if (!updatedMovie) {
         return res.status(404).json({ message: "Movie not found" });
       }
-      
       res.json(updatedMovie);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -78,17 +72,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete a movie
   app.delete("/api/movies/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ message: "Invalid movie ID" });
       }
-      
       const deleted = await storage.deleteMovie(id);
-      
       if (!deleted) {
         return res.status(404).json({ message: "Movie not found" });
       }
-      
       res.status(204).end();
     } catch (error) {
       res.status(500).json({ message: "Error deleting movie" });

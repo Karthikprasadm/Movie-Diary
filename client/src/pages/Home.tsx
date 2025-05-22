@@ -8,6 +8,7 @@ import MovieForm from "@/components/MovieForm";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import FilterControls from "@/components/FilterControls";
 import EmptyState from "@/components/EmptyState";
+import { useMovieWebSocket } from "@/hooks/useMovieWebSocket";
 
 export default function Home() {
   const { toast } = useToast();
@@ -25,8 +26,13 @@ export default function Home() {
   const [movieToDelete, setMovieToDelete] = useState<Movie | null>(null);
 
   // Fetch movies
-  const { data: movies = [], isLoading } = useQuery({
+  const { data: movies = [], isLoading } = useQuery<Movie[]>({
     queryKey: ["/api/movies"],
+  });
+
+  // Real-time updates: refetch movies on WebSocket change
+  useMovieWebSocket(() => {
+    queryClient.invalidateQueries({ queryKey: ["/api/movies"] });
   });
 
   // Add movie mutation

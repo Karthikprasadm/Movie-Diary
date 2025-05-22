@@ -3,7 +3,7 @@ import { Movie, User } from '@shared/schema';
 
 // Set up MongoDB connection
 // This will connect to your local MongoDB when running on your PC
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/favorite-movies';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/moviesDB';
 
 console.log('Attempting to connect to MongoDB at:', MONGODB_URI);
 
@@ -55,7 +55,7 @@ mongoose.connection.on('disconnected', () => {
 
 // Handle application termination
 process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
+  mongoose.connection.close().then(() => {
     console.log('MongoDB connection closed due to application termination');
     process.exit(0);
   });

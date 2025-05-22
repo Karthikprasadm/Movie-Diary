@@ -87,7 +87,10 @@ export default function MovieForm({ isOpen, movie, onClose, onSubmit, isPending 
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby="movie-form-dialog-desc">
+        <div id="movie-form-dialog-desc" style={{ display: 'none' }}>
+          This dialog allows you to add or edit a movie.
+        </div>
         <DialogHeader>
           <DialogTitle>{movie ? "Edit Movie" : "Add New Movie"}</DialogTitle>
         </DialogHeader>
@@ -190,6 +193,7 @@ export default function MovieForm({ isOpen, movie, onClose, onSubmit, isPending 
                       placeholder="Your thoughts on this movie"
                       className="resize-none"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
